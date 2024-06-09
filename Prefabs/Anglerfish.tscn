@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://516buo3xt5d0"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_1haa7"]
+size = Vector2(100, 100)
+
+[node name="Anglerfish" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("PlaceholderTexture2D_1haa7")
