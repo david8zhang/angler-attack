@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://cthfnprie3cws"]
+
+[ext_resource type="Script" path="res://Scripts/Fish.gd" id="1_xpxxn"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_0pcsp"]
+size = Vector2(30, 30)
+
+[node name="Fish" type="Node2D"]
+script = ExtResource("1_xpxxn")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("PlaceholderTexture2D_0pcsp")
