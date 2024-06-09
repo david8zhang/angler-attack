@@ -3,6 +3,8 @@ extends Node2D
 
 
 @export var fish_scene: PackedScene
+@onready var player_controller = $"../PlayerController" as PlayerController
+
 var fish_on_screen: Fish = null
 
 
@@ -18,6 +20,8 @@ func _ready():
 	
 
 func spawn_fish():
+	if player_controller.is_game_over or player_controller.is_resetting:
+		return
 	if fish_on_screen == null or !is_instance_valid(fish_on_screen):
 		fish_on_screen = fish_scene.instantiate() as Fish
 		add_child(fish_on_screen)

@@ -22,3 +22,91 @@ script = ExtResource("3_vxxf8")
 [node name="FishSpawner" type="Node2D" parent="."]
 script = ExtResource("4_l60qg")
 fish_scene = ExtResource("5_mwct1")
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="UILayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Fullness" type="RichTextLabel" parent="UILayer/Control"]
+layout_mode = 1
+offset_left = 16.0
+offset_top = 14.0
+offset_right = 104.0
+offset_bottom = 37.0
+text = "Fullness:"
+text_direction = 1
+
+[node name="Score" type="RichTextLabel" parent="UILayer/Control"]
+layout_mode = 1
+offset_left = 16.0
+offset_top = 43.0
+offset_right = 104.0
+offset_bottom = 66.0
+text = "Score: 0"
+text_direction = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="UILayer/Control"]
+layout_mode = 1
+offset_left = 93.0
+offset_top = 20.0
+offset_right = 241.0
+offset_bottom = 35.0
+value = 100.0
+show_percentage = false
+
+[node name="GameOver" type="Control" parent="UILayer/Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="UILayer/Control/GameOver"]
+layout_mode = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.392157)
+
+[node name="RichTextLabel" type="RichTextLabel" parent="UILayer/Control/GameOver"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -199.0
+offset_top = -65.5
+offset_right = 199.0
+offset_bottom = 5.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/normal_font_size = 50
+bbcode_enabled = true
+text = "[center]Game Over[/center]"
+
+[node name="Button" type="Button" parent="UILayer/Control/GameOver"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -63.5
+offset_top = 15.5
+offset_right = 63.5
+offset_bottom = 56.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Play Again"
+
+[connection signal="pressed" from="UILayer/Control/GameOver/Button" to="PlayerController" method="_on_button_pressed"]
