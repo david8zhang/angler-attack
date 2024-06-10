@@ -5,6 +5,20 @@ extends Node2D
 @onready var sprite = $Sprite2D as Sprite2D
 @onready var player_controller = get_node("/root/Main/PlayerController") as PlayerController
 
+const SMALL_FISH_SPRITES = [
+	"res://Sprites/fish-1.png",
+	"res://Sprites/fish-2.png",
+	"res://Sprites/fish-3.png"
+]
+
+const LARGE_FISH_SPRITES = [
+	"res://Sprites/large-fish-1.png",
+	"res://Sprites/large-fish-2.png",
+	"res://Sprites/large-fish-3.png"
+]
+
+enum FishTypes { SMALL, LARGE }
+
 const MOVE_SPEED = 100
 const CHASING_LURE_SPEED = 150
 
@@ -18,21 +32,25 @@ var escape_dest = null
 var escape_timer: Timer = null
 var bite_lure_timer: Timer = null
 var num_nibbles_before_bite: int = -1
-
-const SPRITE_PATHS = [
-	"res://Sprites/fish-1.png",
-	"res://Sprites/fish-2.png",
-	"res://Sprites/fish-3.png"
-]
+var curr_fish_type: FishTypes
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	var screen_size = get_viewport_rect().size
-	var rand_texture = SPRITE_PATHS.pick_random()
-	sprite.texture = load(rand_texture)
 	var x_pos = 0
 	var y_pos = randi_range(0, screen_size.y)
 	global_position = Vector2(x_pos, y_pos)
+	z_index = 5
+	
+
+func init(fish_type: FishTypes):
+	curr_fish_type = fish_type
+	var rand_texture: String = ""
+	if fish_type == FishTypes.SMALL:
+		rand_texture = SMALL_FISH_SPRITES.pick_random()
+	elif fish_type == FishTypes.LARGE:
+		rand_texture = LARGE_FISH_SPRITES.pick_random()
+	sprite.texture = load(rand_texture)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -50,14 +68,16 @@ func _physics_process(delta):
 			translate(dir * delta * MOVE_SPEED)
 		else:
 			is_investigating_lure = true
-			num_nibbles_before_bite = randi_range(1, 4)
+			# large fish might take a few more nibbles
+			var max_nibbles = 2 if curr_fish_type == FishTypes.SMALL else 4
+			num_nibbles_before_bite = randi_range(1, max_nibbles)
 			start_biting_lure()
 	if is_reeling:
 		if escape_timer != null:
 			escape_timer.stop() 
 			escape_timer.queue_free()	
 		var dist_to_target = global_position.distance_to(light.global_position)
-		if dist_to_target > 40:
+		if dist_to_target > 50:
 			var dir = (light.global_position - global_position).normalized()
 			sprite.flip_h = dir.x < 0
 			translate(dir * delta * CHASING_LURE_SPEED)
@@ -84,7 +104,9 @@ func bite_or_nibble(timer: Timer):
 		escape_timer = Timer.new()
 		escape_timer.autostart = true
 		escape_timer.one_shot = true
-		escape_timer.wait_time = 1.0
+		
+		# Large fish have a smaller wait window
+		escape_timer.wait_time = 1.5 if curr_fish_type == FishTypes.SMALL else 1.0
 		var callable = Callable(self, "escape").bind(player_controller.reset_after_escape)
 		escape_timer.connect("timeout", callable)
 		add_child(escape_timer)

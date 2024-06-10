@@ -9,4 +9,5 @@ size = Vector2(30, 30)
 script = ExtResource("1_xpxxn")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = 15
 texture = SubResource("PlaceholderTexture2D_0pcsp")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://ce3eive3gkobr"]
+[gd_scene load_steps=10 format=3 uid="uid://ce3eive3gkobr"]
 
 [ext_resource type="Texture2D" uid="uid://yka40yn1e3uk" path="res://Sprites/bg.png" id="1_3lkne"]
 [ext_resource type="PackedScene" uid="uid://516buo3xt5d0" path="res://Prefabs/Anglerfish.tscn" id="1_5eocf"]
@@ -6,7 +6,9 @@
 [ext_resource type="Script" path="res://Scripts/PlayerController.gd" id="3_vxxf8"]
 [ext_resource type="Script" path="res://Scripts/FishSpawner.gd" id="4_l60qg"]
 [ext_resource type="PackedScene" uid="uid://cthfnprie3cws" path="res://Prefabs/Fish.tscn" id="5_mwct1"]
+[ext_resource type="PackedScene" uid="uid://bhp30rncni4g4" path="res://Prefabs/Shark.tscn" id="7_l7j68"]
 [ext_resource type="Script" path="res://Scripts/FullnessMeter.gd" id="7_sb8w5"]
+[ext_resource type="AudioStream" uid="uid://b8pt3q6okaw4p" path="res://Sound/bgm.mp3" id="9_5ip0f"]
 
 [node name="Main" type="Node2D"]
 position = Vector2(500, 300)
@@ -16,10 +18,10 @@ texture = ExtResource("1_3lkne")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
+[node name="Light" parent="." instance=ExtResource("2_qasvl")]
+
 [node name="Anglerfish" parent="." instance=ExtResource("1_5eocf")]
 position = Vector2(450, -25)
-
-[node name="Light" parent="." instance=ExtResource("2_qasvl")]
 
 [node name="PlayerController" type="Node2D" parent="."]
 script = ExtResource("3_vxxf8")
@@ -27,6 +29,7 @@ script = ExtResource("3_vxxf8")
 [node name="FishSpawner" type="Node2D" parent="."]
 script = ExtResource("4_l60qg")
 fish_scene = ExtResource("5_mwct1")
+shark_scene = ExtResource("7_l7j68")
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 
@@ -131,6 +134,11 @@ offset_bottom = 107.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "Play Again"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("9_5ip0f")
+volume_db = -25.0
+autoplay = true
 
 [connection signal="value_changed" from="UILayer/Control/ProgressBar" to="UILayer/Control/ProgressBar" method="_on_value_changed"]
 [connection signal="pressed" from="UILayer/Control/GameOver/Button" to="PlayerController" method="_on_button_pressed"]

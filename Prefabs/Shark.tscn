@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://bhp30rncni4g4"]
+
+[ext_resource type="Script" path="res://Scripts/Shark.gd" id="1_8qco1"]
+[ext_resource type="Texture2D" uid="uid://qiwcbrehq2yl" path="res://Sprites/shark-shadow.png" id="1_83dk2"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ud5rs"]
+
+[node name="Shark" type="RigidBody2D"]
+gravity_scale = 2.66454e-15
+script = ExtResource("1_8qco1")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0, 0, 0, 1)
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("1_83dk2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_ud5rs")
