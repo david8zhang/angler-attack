@@ -1,0 +1,46 @@
+[gd_scene load_steps=5 format=3 uid="uid://o2ghbntmm0cu"]
+
+[ext_resource type="Texture2D" uid="uid://yka40yn1e3uk" path="res://Sprites/bg.png" id="1_1dyfp"]
+[ext_resource type="Script" path="res://Scripts/Start.gd" id="1_ustfg"]
+[ext_resource type="Texture2D" uid="uid://daqtfnk54o8ht" path="res://Sprites/title.png" id="2_joqgf"]
+[ext_resource type="Script" path="res://Scripts/TitleText.gd" id="3_i82sh"]
+
+[node name="Start" type="Node2D"]
+position = Vector2(-1, 0)
+script = ExtResource("1_ustfg")
+
+[node name="Background" type="Sprite2D" parent="."]
+texture = ExtResource("1_1dyfp")
+offset = Vector2(500, 300)
+
+[node name="TitleCard" type="Sprite2D" parent="."]
+position = Vector2(500, 256)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_joqgf")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -113.0
+offset_top = -100.0
+offset_right = 112.0
+offset_bottom = -62.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 25
+text = "Press Enter to Play"
+script = ExtResource("3_i82sh")

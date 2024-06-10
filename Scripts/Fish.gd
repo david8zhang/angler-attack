@@ -2,12 +2,11 @@ class_name Fish
 extends Node2D
 
 @onready var light = get_node("/root/Main/Light") as Node2D
-@onready var sprite = $Sprite2D
+@onready var sprite = $Sprite2D as Sprite2D
 @onready var player_controller = get_node("/root/Main/PlayerController") as PlayerController
 
 const MOVE_SPEED = 100
-const ESCAPE_SPEED = 300
-const CHASING_LURE_SPEED = 275
+const CHASING_LURE_SPEED = 150
 
 var is_investigating_lure = false
 var is_biting_lure = false
@@ -20,9 +19,17 @@ var escape_timer: Timer = null
 var bite_lure_timer: Timer = null
 var num_nibbles_before_bite: int = -1
 
+const SPRITE_PATHS = [
+	"res://Sprites/fish-1.png",
+	"res://Sprites/fish-2.png",
+	"res://Sprites/fish-3.png"
+]
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	var screen_size = get_viewport_rect().size
+	var rand_texture = SPRITE_PATHS.pick_random()
+	sprite.texture = load(rand_texture)
 	var x_pos = 0
 	var y_pos = randi_range(0, screen_size.y)
 	global_position = Vector2(x_pos, y_pos)
@@ -35,9 +42,9 @@ func _physics_process(delta):
 			escape_timer.stop() 
 			escape_timer.queue_free()
 		return
-	if !is_investigating_lure:
+	if !is_investigating_lure and !is_escaping:
 		var dist_to_target = global_position.distance_to(light.global_position)
-		if dist_to_target > 40:
+		if dist_to_target > 75:
 			var dir = (light.global_position - global_position).normalized()
 			sprite.flip_h = dir.x < 0
 			translate(dir * delta * MOVE_SPEED)
@@ -93,6 +100,7 @@ func bite_or_nibble(timer: Timer):
 
 func escape(callable: Callable):
 	if !is_escaping:
+		sprite.set_deferred("flip_h", true)
 		is_escaping = true
 		if bite_lure_timer != null and is_instance_valid(bite_lure_timer):
 			bite_lure_timer.stop()

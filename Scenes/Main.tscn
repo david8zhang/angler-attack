@@ -1,18 +1,23 @@
-[gd_scene load_steps=6 format=3 uid="uid://ce3eive3gkobr"]
+[gd_scene load_steps=8 format=3 uid="uid://ce3eive3gkobr"]
 
+[ext_resource type="Texture2D" uid="uid://yka40yn1e3uk" path="res://Sprites/bg.png" id="1_3lkne"]
 [ext_resource type="PackedScene" uid="uid://516buo3xt5d0" path="res://Prefabs/Anglerfish.tscn" id="1_5eocf"]
 [ext_resource type="PackedScene" uid="uid://itg1e4r4w23l" path="res://Prefabs/Light.tscn" id="2_qasvl"]
 [ext_resource type="Script" path="res://Scripts/PlayerController.gd" id="3_vxxf8"]
 [ext_resource type="Script" path="res://Scripts/FishSpawner.gd" id="4_l60qg"]
 [ext_resource type="PackedScene" uid="uid://cthfnprie3cws" path="res://Prefabs/Fish.tscn" id="5_mwct1"]
+[ext_resource type="Script" path="res://Scripts/FullnessMeter.gd" id="7_sb8w5"]
 
 [node name="Main" type="Node2D"]
 position = Vector2(500, 300)
 
+[node name="Background" type="Sprite2D" parent="."]
+texture = ExtResource("1_3lkne")
+
 [node name="Camera2D" type="Camera2D" parent="."]
 
 [node name="Anglerfish" parent="." instance=ExtResource("1_5eocf")]
-position = Vector2(450, 2.08165e-12)
+position = Vector2(450, -25)
 
 [node name="Light" parent="." instance=ExtResource("2_qasvl")]
 
@@ -59,9 +64,11 @@ offset_right = 241.0
 offset_bottom = 35.0
 value = 100.0
 show_percentage = false
+script = ExtResource("7_sb8w5")
 
 [node name="GameOver" type="Control" parent="UILayer/Control"]
 visible = false
+modulate = Color(1, 1, 1, 0)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -75,7 +82,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.392157)
+color = Color(0, 0, 0, 1)
 
 [node name="RichTextLabel" type="RichTextLabel" parent="UILayer/Control/GameOver"]
 layout_mode = 1
@@ -84,15 +91,31 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -199.0
-offset_top = -65.5
-offset_right = 199.0
-offset_bottom = 5.5
+offset_left = -200.0
+offset_top = -100.0
+offset_right = 198.0
+offset_bottom = -29.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/normal_font_size = 50
 bbcode_enabled = true
 text = "[center]Game Over[/center]"
+
+[node name="Label" type="Label" parent="UILayer/Control/GameOver"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -30.5
+offset_top = -13.0
+offset_right = 30.5
+offset_bottom = 13.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 25
+text = "Your score: 0"
 
 [node name="Button" type="Button" parent="UILayer/Control/GameOver"]
 layout_mode = 1
@@ -101,12 +124,13 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -63.5
-offset_top = 15.5
-offset_right = 63.5
-offset_bottom = 56.5
+offset_left = -63.0
+offset_top = 66.0
+offset_right = 64.0
+offset_bottom = 107.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "Play Again"
 
+[connection signal="value_changed" from="UILayer/Control/ProgressBar" to="UILayer/Control/ProgressBar" method="_on_value_changed"]
 [connection signal="pressed" from="UILayer/Control/GameOver/Button" to="PlayerController" method="_on_button_pressed"]

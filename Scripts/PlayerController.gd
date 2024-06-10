@@ -1,13 +1,13 @@
 class_name PlayerController
 extends Node2D
 
-@onready var anglerfish = $"../Anglerfish"
+@onready var anglerfish = $"../Anglerfish" as Anglerfish
 @onready var light = $"../Light"
 @onready var camera = $"../Camera2D"
 @onready var fish_spawner = $"../FishSpawner" as FishSpawner
 @onready var fullness_bar = $"../UILayer/Control/ProgressBar"
 @onready var score_text = $"../UILayer/Control/Score"
-@onready var game_over = $"../UILayer/Control/GameOver"
+@onready var game_over = $"../UILayer/Control/GameOver" as Control
 
 # When light gets cast out, it gets cast out in "stages"
 var total_stages = 2
@@ -19,11 +19,9 @@ var is_resetting = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	print(is_game_over)
 	init_anglerfish_pos = anglerfish.global_position
 	var x_pos = get_lure_position_for_stage(curr_stage_index)
 	light.global_position.x = x_pos
-	
 	var hunger_timer = Timer.new()
 	hunger_timer.wait_time = 1.0
 	hunger_timer.one_shot = false
@@ -38,11 +36,13 @@ func decrease_fullness_bar():
 	if fullness_bar.value == 0: 
 		is_game_over = true
 		game_over.visible = true
+		var tween = create_tween()
+		tween.tween_property(game_over, "modulate:a", 1, 0.5)
 
 
 func get_lure_position_for_stage(stage: int):
 	var screen_size = get_viewport_rect().size
-	var screen_width = screen_size.x
+	var screen_width = screen_size.x / 1.25
 	return (((stage * screen_width) / total_stages) + \
 			(((stage + 1) * screen_width) / total_stages)) / 2
 
@@ -52,24 +52,29 @@ func _physics_process(delta):
 		if !is_game_over:
 			var fish = fish_spawner.fish_on_screen
 			if fish != null and is_instance_valid(fish):
-				if fish.is_biting_lure:
-					if curr_stage_index == total_stages - 1:
-						fish.is_eaten = true
-						var eat_tween = create_tween()
-						eat_tween.tween_property(anglerfish, "global_position", light.global_position, 0.5)
-						eat_tween.finished.connect(on_fish_eat)
+				if !fish.is_reeling and !fish.is_eaten:
+					if fish.is_biting_lure:
+						if curr_stage_index == total_stages - 1:
+							fish.is_eaten = true
+							var eat_tween = create_tween()
+							var light_pos = light.global_position
+							anglerfish.update_texture("res://Sprites/bite-1.png")
+							eat_tween.tween_property(anglerfish, "global_position", Vector2(anglerfish.global_position.x - 200, anglerfish.global_position.y), 0.5)
+							eat_tween.parallel().tween_property(light, "global_position", Vector2(light_pos.x, -200), 0.5) 
+							eat_tween.finished.connect(on_fish_eat)
+						else:
+							fish.is_reeling = true
+							var tween = create_tween()
+							var new_x_pos = get_lure_position_for_stage(curr_stage_index + 1)
+							curr_stage_index += 1
+							tween.tween_property(light, "global_position", Vector2(new_x_pos, light.global_position.y), 1.5).set_ease(Tween.EASE_OUT)
+							tween.finished.connect(fish.reel_complete)
 					else:
-						fish.is_reeling = true
-						var tween = create_tween()
-						var new_x_pos = get_lure_position_for_stage(curr_stage_index + 1)
-						curr_stage_index += 1
-						tween.tween_property(light, "global_position", Vector2(new_x_pos, light.global_position.y), 1.5).set_ease(Tween.EASE_OUT)
-						tween.finished.connect(fish.reel_complete)
-				else:
-					fish.escape(reset_after_escape)
+						fish.escape(reset_after_escape)
 
 
 func on_fish_eat():
+	anglerfish.update_texture("res://Sprites/bite-2.png")
 	var fish = fish_spawner.fish_on_screen as Fish
 	fish.visible = false
 	var reset_tween = create_tween()
@@ -83,12 +88,15 @@ func on_fish_eat():
 	
 
 func reset_after_eating():
+	var screen_size = get_viewport_rect().size
 	var fish = fish_spawner.fish_on_screen as Fish
 	fish.queue_free()
 	var reset_light_tween = create_tween()
 	curr_stage_index = 0
-	var light_pos = Vector2(get_lure_position_for_stage(curr_stage_index), light.global_position.y)
-	reset_light_tween.tween_property(light, "global_position", light_pos, 1)
+	var tween = create_tween()
+	tween.tween_property(light, "global_position", Vector2(get_lure_position_for_stage(curr_stage_index), -200), 0.5)
+	tween.tween_property(light, "global_position", Vector2(get_lure_position_for_stage(curr_stage_index), screen_size.y / 2), 0.5)
+	tween.finished.connect(on_reset_complete)
 
 
 func reset_after_escape():
@@ -100,7 +108,7 @@ func reset_after_escape():
 	
 
 func on_reset_complete():
-	print("reset complete!")
+	anglerfish.update_texture("res://Sprites/neutral.png")
 	is_resetting = false
 
 

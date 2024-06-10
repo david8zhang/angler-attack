@@ -1,9 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://516buo3xt5d0"]
+[gd_scene load_steps=3 format=3 uid="uid://516buo3xt5d0"]
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_1haa7"]
-size = Vector2(100, 100)
+[ext_resource type="Script" path="res://Scripts/Anglerfish.gd" id="1_et6w0"]
+[ext_resource type="Texture2D" uid="uid://btnv7n45l2rih" path="res://Sprites/neutral.png" id="1_j4cwv"]
 
 [node name="Anglerfish" type="Node2D"]
+script = ExtResource("1_et6w0")
+
+[node name="Line2D" type="Line2D" parent="."]
+points = PackedVector2Array(-50, 2.08165e-12, -100, -500)
+width = 5.0
+default_color = Color(0, 0, 0, 1)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = SubResource("PlaceholderTexture2D_1haa7")
+z_index = 50
+texture = ExtResource("1_j4cwv")
